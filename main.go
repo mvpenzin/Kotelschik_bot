@@ -78,8 +78,8 @@ func main() {
 
 		default:
 			// Неизвестная команда – можно проигнорировать или ответить
-			// msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Неизвестная команда. Напишите /help")
-			// bot.Send(msg)
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Неизвестная команда. Напишите /help")
+			bot.Send(msg)
 		}
 	}
 }
