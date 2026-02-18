@@ -36,6 +36,11 @@ func StartBot(cfg TelegramConfig) {
 
         bot.Debug = cfg.Debug
 
+        deleteWebhook := tgbotapi.DeleteWebhookConfig{DropPendingUpdates: false}
+        if _, err := bot.Request(deleteWebhook); err != nil {
+                log.Printf("Warning: failed to delete webhook: %v", err)
+        }
+
         log.Printf("Authorized on account %s", bot.Self.UserName)
         LogBotAction("INFO", "Bot started", fmt.Sprintf("Account: %s", bot.Self.UserName))
 
