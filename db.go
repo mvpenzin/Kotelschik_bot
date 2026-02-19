@@ -62,9 +62,10 @@ func InitDB(cfg DatabaseConfig) error {
                         adds VARCHAR(240),
                         comment TEXT
                 )`,
-                `CREATE TABLE IF NOT EXISTS bot_logs (
-                        id SERIAL PRIMARY KEY,
+                `CREATE TABLE IF NOT EXISTS snt_logs (
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        id SERIAL PRIMARY KEY,
                         level VARCHAR(10),
                         message TEXT,
                         details TEXT
@@ -77,6 +78,19 @@ func InitDB(cfg DatabaseConfig) error {
                 }
         }
 
+        // Default record for snt_details if empty
+        var count int
+        err = db.QueryRow(context.Background(), "SELECT COUNT(*) FROM snt_details").Scan(&count)
+        if err == nil && count == 0 {
+                _, err = db.Exec(context.Background(), `
+                        INSERT INTO snt_details (id, name, inn, kpp, personal_acc, bank_name, bik, corresp_acc, comment)
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                `, "MAIN", "СНТ \"КОТЕЛЬЩИК\"", "2263006486", "226301001", "40703810202140010272", "АЛТАЙСКОЕ ОТДЕЛЕНИЕ N8644 ПАО СБЕРБАНК", "040173604", "30101810200000000604", "Первоначальное значение")
+                if err != nil {
+                        log.Printf("Warning: failed to insert default snt_details: %v", err)
+                }
+        }
+
         log.Println("Connected to database and initialized tables")
         return nil
 }
@@ -86,7 +100,7 @@ func LogBotAction(level, message, details string) {
                 log.Println("Database not initialized, skipping log:", message)
                 return
         }
-        _, err := db.Exec(context.Background(), "INSERT INTO bot_logs (level, message, details) VALUES ($1, $2, $3)", level, message, details)
+        _, err := db.Exec(context.Background(), "INSERT INTO snt_logs (level, message, details) VALUES ($1, $2, $3)", level, message, details)
         if err != nil {
                 log.Println("Failed to write log to DB:", err)
         }

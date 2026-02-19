@@ -88,6 +88,10 @@ func handleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
                         handleShow(bot, msg)
                 case "me":
                         handleUserInfo(bot, msg)
+                case "fio":
+                        handleFioEdit(bot, msg)
+                case "phone":
+                        handlePhoneEdit(bot, msg)
                 default:
                         reply := tgbotapi.NewMessage(msg.Chat.ID, "Неизвестная команда")
                         bot.Send(reply)
@@ -112,6 +116,63 @@ func handleUpdate(bot *tgbotapi.BotAPI, update tgbotapi.Update) {
         case "Баш!":
                 handleBash(bot, msg)
         }
+}
+
+func handleFioEdit(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
+        args := msg.CommandArguments()
+        if args == "" {
+                bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Пожалуйста, укажите ФИО после команды. Пример: /fio Иванов Иван Иванович"))
+                return
+        }
+
+        _, err := db.Exec(context.Background(), `
+                UPDATE snt_users 
+                SET user_fio = $1, modified = CURRENT_TIMESTAMP 
+                WHERE user_id = $2
+        `, args, msg.From.ID)
+
+        if err != nil {
+                log.Printf("Error updating FIO: %v", err)
+                bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Ошибка при обновлении ФИО."))
+                return
+        }
+
+        bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "ФИО успешно обновлено!"))
+}
+
+func handlePhoneEdit(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
+        args := msg.CommandArguments()
+        if args == "" {
+                bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Пожалуйста, укажите номер телефона (10 цифр) после команды. Пример: /phone 9001234567"))
+                return
+        }
+
+        // Basic validation: 10 digits
+        cleanPhone := ""
+        for _, r := range args {
+                if r >= '0' && r <= '9' {
+                        cleanPhone += string(r)
+                }
+        }
+
+        if len(cleanPhone) != 10 {
+                bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Номер телефона должен содержать 10 цифр."))
+                return
+        }
+
+        _, err := db.Exec(context.Background(), `
+                UPDATE snt_users 
+                SET user_phone = $1, modified = CURRENT_TIMESTAMP 
+                WHERE user_id = $2
+        `, cleanPhone, msg.From.ID)
+
+        if err != nil {
+                log.Printf("Error updating phone: %v", err)
+                bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Ошибка при обновлении телефона."))
+                return
+        }
+
+        bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "Телефон успешно обновлен!"))
 }
 
 func handleStart(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
