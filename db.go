@@ -31,9 +31,10 @@ func InitDB(cfg DatabaseConfig) error {
 	// Create tables if they don't exist
 	queries := []string{
 		`CREATE TABLE IF NOT EXISTS snt_users (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        user_id BIGINT NOT NULL PRIMARY KEY,
+                        user_id BIGINT NOT NULL,
                         user_name VARCHAR(64) NOT NULL,
                         user_fio VARCHAR(255),
                         user_phone VARCHAR(10),
@@ -42,9 +43,9 @@ func InitDB(cfg DatabaseConfig) error {
                 )`,
 		`CREATE INDEX IF NOT EXISTS idx_snt_users_user_name ON snt_users(user_name)`,
 		`CREATE TABLE IF NOT EXISTS snt_details (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        id SERIAL PRIMARY KEY,
                         name VARCHAR(120) NOT NULL,
                         inn VARCHAR(10) NOT NULL,
                         kpp VARCHAR(9) NOT NULL,
@@ -55,34 +56,37 @@ func InitDB(cfg DatabaseConfig) error {
                         comment TEXT
                 )`,
 		`CREATE TABLE IF NOT EXISTS snt_contacts (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         prior INTEGER NOT NULL,
-                        type VARCHAR(20) NOT NULL PRIMARY KEY,
+                        type VARCHAR(20) NOT NULL,
                         value VARCHAR(120) NOT NULL,
                         adds VARCHAR(240),
                         comment TEXT
                 )`,
+		`CREATE INDEX IF NOT EXISTS idx_snt_contacts_type ON snt_contacts(type)`,
 		`CREATE TABLE IF NOT EXISTS snt_logs (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        id SERIAL PRIMARY KEY,
                         level VARCHAR(10),
                         message TEXT,
                         details TEXT
                 )`,
 		`CREATE TABLE IF NOT EXISTS snt_debts (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        area VARCHAR(12) NOT NULL PRIMARY KEY,
+                        area VARCHAR(12) NOT NULL,
                         debt DECIMAL(10,2) NOT NULL,
                         debt_prev DECIMAL(10,2),
                         comment TEXT
                 )`,
 		`CREATE TABLE IF NOT EXISTS snt_prices (
+												id SERIAL PRIMARY KEY,
                         created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                         modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        id SERIAL PRIMARY KEY,
                         deposit DECIMAL(10,2) NOT NULL,
                         electricity DECIMAL(10,2) NOT NULL,
                         comment TEXT
