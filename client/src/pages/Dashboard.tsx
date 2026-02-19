@@ -79,7 +79,7 @@ export default function Dashboard() {
               </div>
             )}
             <p className="text-xs text-muted-foreground mt-2">
-              С момента последнего перезапуска
+              c момента последнего перезапуска
             </p>
           </CardContent>
         </Card>
@@ -105,9 +105,9 @@ export default function Dashboard() {
         {/* Live Logs Preview */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Логи в реальном времени</h2>
+            <h2 className="text-xl font-semibold">Логи</h2>
             <Badge variant="outline" className="font-mono text-xs">
-              В реальном времени
+              online
             </Badge>
           </div>
           <Card className="bg-black/40 border-border/50 overflow-hidden">

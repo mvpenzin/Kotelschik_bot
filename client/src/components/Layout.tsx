@@ -5,9 +5,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
 
   const navItems = [
-    { href: "/", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/contacts", label: "Contacts", icon: Users },
-    { href: "/logs", label: "System Logs", icon: Terminal },
+    { href: "/", label: "Панель управления", icon: LayoutDashboard },
+    { href: "/contacts", label: "Контакты", icon: Users },
+    { href: "/details", label: "Реквизиты", icon: Users },
+    { href: "/prices", label: "Тарифы", icon: Users },
+    { href: "/debts", label: "Задолженности", icon: Users },
+    { href: "/logs", label: "Системные логи", icon: Terminal },
   ];
 
   return (
@@ -19,7 +22,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
               <Activity className="w-5 h-5" />
             </div>
-            <h1 className="font-bold text-lg tracking-tight">SNT Bot</h1>
+            <h1 className="font-bold text-lg tracking-tight">
+              СНТ "Котельщик"
+            </h1>
           </div>
         </div>
 
@@ -31,13 +36,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <div
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer
-                    ${isActive 
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-black/10" 
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    ${
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-black/10"
+                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                     }
                   `}
                 >
-                  <item.icon className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                  <item.icon
+                    className={`w-4 h-4 ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
+                  />
                   {item.label}
                 </div>
               </Link>
@@ -47,8 +55,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         <div className="p-4 border-t border-border/50">
           <div className="bg-muted/30 rounded-xl p-4">
-            <p className="text-xs text-muted-foreground font-mono">v1.0.0-beta</p>
-            <p className="text-xs text-muted-foreground mt-1">Status: Operational</p>
+            <p className="text-xs text-muted-foreground font-mono">
+              v0.0.1-beta
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Статус: В работе
+            </p>
           </div>
         </div>
       </aside>
@@ -57,7 +69,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header (visible only on small screens) */}
         <header className="md:hidden h-16 border-b border-border flex items-center px-4 justify-between bg-card">
-          <div className="font-bold">SNT Bot Control</div>
+          <div className="font-bold">СНТ "Котельщик"</div>
         </header>
 
         <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12">
