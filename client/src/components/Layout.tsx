@@ -1,16 +1,24 @@
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Users, Terminal, Activity } from "lucide-react";
+import {
+  Activity,
+  LayoutDashboard,
+  BookUser,
+  Logs,
+  ChartNoAxesCombined,
+  CalendarDays,
+  NotebookTabs,
+} from "lucide-react";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
 
   const navItems = [
     { href: "/", label: "Панель управления", icon: LayoutDashboard },
-    { href: "/contacts", label: "Контакты", icon: Users },
-    { href: "/details", label: "Реквизиты", icon: Users },
-    { href: "/prices", label: "Тарифы", icon: Users },
-    { href: "/debts", label: "Задолженности", icon: Users },
-    { href: "/logs", label: "Системные логи", icon: Terminal },
+    { href: "/contacts", label: "Контакты", icon: BookUser },
+    { href: "/details", label: "Реквизиты", icon: NotebookTabs },
+    { href: "/prices", label: "Тарифы", icon: ChartNoAxesCombined },
+    { href: "/debts", label: "Задолженности", icon: CalendarDays },
+    { href: "/logs", label: "Системные логи", icon: Logs },
   ];
 
   return (

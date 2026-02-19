@@ -74,7 +74,7 @@ export default function Contacts() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Поиск контакта..."
+              placeholder="Поиск..."
               className="pl-9 bg-background/50 border-border/50 focus-visible:ring-1"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
