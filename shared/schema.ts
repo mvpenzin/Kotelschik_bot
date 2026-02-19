@@ -1,6 +1,7 @@
 import { pgTable, text, serial, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import { comment } from "postcss";
+import { number, z } from "zod";
 
 // --- Users Table (from Telegram) ---
 export const sntUsers = pgTable("snt_users", {
@@ -14,12 +15,13 @@ export const sntUsers = pgTable("snt_users", {
 
 // --- Contacts Table ---
 export const sntContacts = pgTable("snt_contacts", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description"),
-  phone: text("phone"),
-  email: text("email"),
-  createdAt: timestamp("created_at").defaultNow(),
+  prior: serial("prior").primaryKey(),
+  type: text("type").notNull(),
+  value: text("value"),
+  adds: text("adds"),
+  comment: text("comment"),
+  created: timestamp("created").defaultNow(),
+  modified: timestamp("modified").defaultNow(),
 });
 
 // --- Bot Logs (for frontend display) ---
@@ -31,11 +33,19 @@ export const botLogs = pgTable("bot_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-
 // --- Schemas ---
-export const insertSntUserSchema = createInsertSchema(sntUsers).omit({ id: true, createdAt: true });
-export const insertSntContactSchema = createInsertSchema(sntContacts).omit({ id: true, createdAt: true });
-export const insertBotLogSchema = createInsertSchema(botLogs).omit({ id: true, createdAt: true });
+export const insertSntUserSchema = createInsertSchema(sntUsers).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertSntContactSchema = createInsertSchema(sntContacts).omit({
+  prior: true,
+  created: true,
+});
+export const insertBotLogSchema = createInsertSchema(botLogs).omit({
+  id: true,
+  createdAt: true,
+});
 
 // --- Types ---
 export type SntUser = typeof sntUsers.$inferSelect;

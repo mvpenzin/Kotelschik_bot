@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { useContacts, useCreateContact, useDeleteContact } from "@/hooks/use-bot";
+import {
+  useContacts,
+  useCreateContact,
+  useDeleteContact,
+} from "@/hooks/use-bot";
 import { insertSntContactSchema, type InsertSntContact } from "@shared/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,19 +48,24 @@ export default function Contacts() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const filteredContacts = contacts?.filter(contact => 
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredContacts =
+    contacts?.filter(
+      (contact) =>
+        contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) || [];
 
   return (
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Contacts</h1>
-          <p className="text-muted-foreground">Manage the directory used by the bot.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Контакты</h1>
+          <p className="text-muted-foreground">Управление контактами СНТ</p>
         </div>
-        <CreateContactDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+        <CreateContactDialog
+          open={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+        />
       </div>
 
       <div className="glass-panel rounded-xl border border-border/50 overflow-hidden">
@@ -64,8 +73,8 @@ export default function Contacts() {
         <div className="p-4 border-b border-border/50 bg-muted/20 flex gap-4">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search contacts..." 
+            <Input
+              placeholder="Поиск контакта..."
               className="pl-9 bg-background/50 border-border/50 focus-visible:ring-1"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -78,36 +87,47 @@ export default function Contacts() {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-border/50">
-                <TableHead className="w-[200px]">Name</TableHead>
-                <TableHead className="min-w-[200px]">Description</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="w-[100px] text-right">Actions</TableHead>
+                <TableHead className="w-[10px]">#</TableHead>
+                <TableHead className="w-[200px]">Тип</TableHead>
+                <TableHead className="min-w-[200px]">Значение</TableHead>
+                <TableHead>Дополнительно</TableHead>
+                <TableHead>Комментарий</TableHead>
+                <TableHead className="w-[100px] text-right">Действия</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">Loading contacts...</TableCell>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    Загрузка контактов...
+                  </TableCell>
                 </TableRow>
               ) : filteredContacts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-48 text-center text-muted-foreground">
-                    No contacts found. Add one to get started.
+                  <TableCell
+                    colSpan={5}
+                    className="h-48 text-center text-muted-foreground"
+                  >
+                    Контакты не найдены.
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredContacts.map((contact) => (
-                  <TableRow key={contact.id} className="hover:bg-muted/30 border-border/50">
+                  <TableRow
+                    key={contact.prior}
+                    className="hover:bg-muted/30 border-border/50"
+                  >
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                           <User className="w-4 h-4" />
                         </div>
-                        {contact.name}
+                        {contact.type}
                       </div>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{contact.description}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {contact.value}
+                    </TableCell>
                     <TableCell>
                       {contact.phone && (
                         <div className="flex items-center gap-2 text-sm">
@@ -125,7 +145,10 @@ export default function Contacts() {
                       )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <DeleteContactButton id={contact.id} name={contact.name} />
+                      <DeleteContactButton
+                        id={contact.id}
+                        name={contact.name}
+                      />
                     </TableCell>
                   </TableRow>
                 ))
@@ -138,9 +161,15 @@ export default function Contacts() {
   );
 }
 
-function CreateContactDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+function CreateContactDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { mutate, isPending } = useCreateContact();
-  
+
   const form = useForm<InsertSntContact>({
     resolver: zodResolver(insertSntContactSchema),
     defaultValues: {
@@ -165,34 +194,52 @@ function CreateContactDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       <DialogTrigger asChild>
         <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20">
           <Plus className="w-4 h-4 mr-2" />
-          Add Contact
+          Добавить
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle>Add Contact</DialogTitle>
-          <DialogDescription>
-            Create a new contact entry for the bot's directory.
-          </DialogDescription>
+          <DialogTitle>Добавить контакт</DialogTitle>
+          <DialogDescription>Создание нового контакта СНТ</DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" {...form.register("name")} placeholder="e.g. Security Post" />
-            {form.formState.errors.name && <p className="text-xs text-red-500">{form.formState.errors.name.message}</p>}
+            <Input
+              id="name"
+              {...form.register("name")}
+              placeholder="e.g. Security Post"
+            />
+            {form.formState.errors.name && (
+              <p className="text-xs text-red-500">
+                {form.formState.errors.name.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <Input id="description" {...form.register("description")} placeholder="Role or location" />
+            <Input
+              id="description"
+              {...form.register("description")}
+              placeholder="Role or location"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" {...form.register("phone")} placeholder="+7..." />
+              <Input
+                id="phone"
+                {...form.register("phone")}
+                placeholder="+7..."
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" {...form.register("email")} placeholder="email@example.com" />
+              <Input
+                id="email"
+                {...form.register("email")}
+                placeholder="email@example.com"
+              />
             </div>
           </div>
           <DialogFooter className="pt-4">
@@ -212,7 +259,11 @@ function DeleteContactButton({ id, name }: { id: number; name: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover:bg-red-500/10 hover:text-red-500">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hover:bg-red-500/10 hover:text-red-500"
+        >
           <Trash2 className="w-4 h-4" />
         </Button>
       </AlertDialogTrigger>
@@ -220,12 +271,13 @@ function DeleteContactButton({ id, name }: { id: number; name: string }) {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Contact?</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <strong>{name}</strong>? This action cannot be undone.
+            Are you sure you want to delete <strong>{name}</strong>? This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={() => mutate(id)}
             className="bg-red-500 hover:bg-red-600 text-white"
             disabled={isPending}
