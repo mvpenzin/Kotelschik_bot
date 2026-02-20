@@ -2,7 +2,6 @@ package main
 
 import (
         "log"
-        "os"
         "time"
 
         "github.com/joho/godotenv"
