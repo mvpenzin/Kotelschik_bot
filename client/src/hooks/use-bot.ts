@@ -82,8 +82,8 @@ export function useUpdateContact() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async ({ prior, contact }: { prior: number; contact: InsertSntContact }) => {
-      const url = buildUrl(api.contacts.update.path, { prior });
+    mutationFn: async ({ id, contact }: { id: number; contact: InsertSntContact }) => {
+      const url = buildUrl(api.contacts.update.path, { id });
       const res = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -118,8 +118,8 @@ export function useDeleteContact() {
   const { toast } = useToast();
 
   return useMutation({
-    mutationFn: async (prior: number) => {
-      const url = buildUrl(api.contacts.delete.path, { prior });
+    mutationFn: async (id: number) => {
+      const url = buildUrl(api.contacts.delete.path, { id });
       const res = await fetch(url, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete contact");
     },
