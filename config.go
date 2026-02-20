@@ -5,11 +5,16 @@ import (
 )
 
 type Config struct {
+	Settings SettingsConfig
 	Telegram TelegramConfig
 	Database DatabaseConfig
 	Server   ServerConfig
 	Weather  WeatherConfig
 	Quote    QuoteConfig
+}
+
+type SettingsConfig struct {
+	Timeout int
 }
 
 type TelegramConfig struct {
@@ -47,6 +52,9 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	config := &Config{}
+
+	// Settings
+	config.Settings.Timeout = cfg.Section("settings").Key("timeout").MustInt(60)
 
 	// Telegram
 	config.Telegram.Token = cfg.Section("telegram").Key("token").String()
